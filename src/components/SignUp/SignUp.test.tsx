@@ -4,49 +4,81 @@ import { setupServer } from "msw/node";
 import SignUp from "./";
 import { handlers } from "./handlers";
 import { debug } from "jest-preview";
+import { getButtonByName, getInputByLabel, getHeadingByText } from "../../test-utils/getterUtility.js";
 // Setting up the mock server
 const server = setupServer(...handlers);
+
+const getter = {
+  getUsernameInput: () => getInputByLabel("User name"),
+  getEmailInput: () => getInputByLabel("Email Address"),
+  getPasswordInput: () => getInputByLabel("Password"),
+  getNotficationCheckbox: () => getInputByLabel("I want to receive inspiration, marketing promotions and updates via email."),
+  getSignUpButton: () => getButtonByName("Sign Up"),
+}
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 describe("SignUp Component", () => {
-  describe("Validation", () => {
-    it("should display validation errors for invalid email", async () => {
-      render(<SignUp />);
-      // use jest preview to debug your test
-      debug();
-    });
 
-    it("should display validation errors for short password", async () => {
+  describe("Smmoke Tests", () => {
+    it("should render sign up comonent", () => {
       render(<SignUp />);
-    });
+      const usernameInput = getter.getUsernameInput();
+      const emailInput = getter.getEmailInput();
+      const passwordInput = getter.getPasswordInput();
+      const signupButton = getter.getSignUpButton();
+      const notificationCheckbox = getter.getNotficationCheckbox();
 
-    it("should display success message on successful sign-up", async () => {
-      render(<SignUp />);
-    });
+      expect(usernameInput).toBeInTheDocument();
+      expect(emailInput).toBeInTheDocument();
+      expect(passwordInput).toBeInTheDocument();
+      expect(signupButton).toBeInTheDocument();
+      expect(notificationCheckbox).toBeInTheDocument();
+      
+    })
+  })
 
-    it("should display error message on sign-up failure", async () => {
-      render(<SignUp />);
-    });
-  });
+  // describe("Validation", () => {
 
-  describe("Form Interaction", () => {
-    it("should enable Sign Up button when form is valid", async () => {
-      render(<SignUp />);
-    });
 
-    it("should disable Sign Up button when form is invalid", async () => {
-      render(<SignUp />);
-    });
 
-    it("should update form fields on user input", async () => {
-      render(<SignUp />);
-    });
+    // it("should display validation errors for invalid email", async () => {
+    //   render(<SignUp />);
 
-    it("should redirect user to home page after successful signup", async () => {
-      render(<SignUp />);
-    });
-  });
+    //   // use jest preview to debug your test
+    //   debug();
+    // });
+
+  //   it("should display validation errors for short password", async () => {
+  //     render(<SignUp />);
+  //   });
+
+  //   it("should display success message on successful sign-up", async () => {
+  //     render(<SignUp />);
+  //   });
+
+  //   it("should display error message on sign-up failure", async () => {
+  //     render(<SignUp />);
+  //   });
+  // });
+
+  // describe("Form Interaction", () => {
+  //   it("should enable Sign Up button when form is valid", async () => {
+  //     render(<SignUp />);
+  //   });
+
+  //   it("should disable Sign Up button when form is invalid", async () => {
+  //     render(<SignUp />);
+  //   });
+
+  //   it("should update form fields on user input", async () => {
+  //     render(<SignUp />);
+  //   });
+
+  //   it("should redirect user to home page after successful signup", async () => {
+  //     render(<SignUp />);
+  //   });
+  // });
 });
