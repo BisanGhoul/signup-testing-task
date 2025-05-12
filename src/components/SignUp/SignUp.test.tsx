@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { setupServer } from "msw/node";
 import SignUp from "./";
 import { handlers } from "./handlers";
@@ -124,11 +124,31 @@ describe("SignUp Component", () => {
         expect(signupButton).toBeEnabled();
         debug();
       });
+
+
+      it("should disable Sign Up button when form is invalid", async () => {
+        render(<SignUp />);
+        const usernameInput = getter.getUsernameInput();
+        const emailInput = getter.getEmailInput();
+        const passwordInput = getter.getPasswordInput();
+
+        userEvent.clear(usernameInput);
+        userEvent.clear(emailInput);
+        userEvent.clear(passwordInput);
+
+
+        userEvent.type(usernameInput, "testuser{enter}");
+        userEvent.type(emailInput, "bbisann@gmail.com{enter}");
+        userEvent.type(passwordInput, "123456{enter}");
+
+
+        const signupButton = getter.getSignUpButton();
+        await waitFor(() => {
+          expect(signupButton).toBeDisabled();
+        });      // debug();
+      });
     });
 
-    //   it("should disable Sign Up button when form is invalid", async () => {
-    //     render(<SignUp />);
-    //   });
 
     //   it("should update form fields on user input", async () => {
     //     render(<SignUp />);
