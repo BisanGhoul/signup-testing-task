@@ -16,7 +16,8 @@ const getter = {
   getNotficationCheckbox: () => getInputByLabel("I want to receive inspiration, marketing promotions and updates via email."),
   getSignUpButton: () => getButtonByName("Sign Up"),
   getEmailWarning: () => findElementByText("Enter a valid email"),
-  getPasswordLengthWarning: () => findElementByText('Password should be of minimum 8 characters length')
+  getPasswordLengthWarning: () => findElementByText('Password should be of minimum 8 characters length'),
+  getSignUpError: () => findElementByText("Error Signing Up!"),
 }
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
@@ -64,35 +65,49 @@ describe("SignUp Component", () => {
       debug();
     });
 
-      it("should display validation errors for short password", async () => {
-        render(<SignUp />);
-        const passwordInput = getter.getPasswordInput();
+    it("should display validation errors for short password", async () => {
+      render(<SignUp />);
+      const passwordInput = getter.getPasswordInput();
 
-        // Short password + blur
-        userEvent.clear(passwordInput);
-        userEvent.type(passwordInput, "1234567{enter}");
-        let passwordLengthWarning = await getter.getPasswordLengthWarning();
-        expect(passwordLengthWarning).toBeInTheDocument();
+      // Short password + blur
+      userEvent.clear(passwordInput);
+      userEvent.type(passwordInput, "1234567{enter}");
+      let passwordLengthWarning = await getter.getPasswordLengthWarning();
+      expect(passwordLengthWarning).toBeInTheDocument();
 
-        // Short password + pressing enter key
-        userEvent.clear(passwordInput);
-        userEvent.type(passwordInput, "12345");
-        userEvent.tab();
-        passwordLengthWarning = await getter.getPasswordLengthWarning();
-        expect(passwordLengthWarning).toBeInTheDocument();
+      // Short password + pressing enter key
+      userEvent.clear(passwordInput);
+      userEvent.type(passwordInput, "12345");
+      userEvent.tab();
+      passwordLengthWarning = await getter.getPasswordLengthWarning();
+      expect(passwordLengthWarning).toBeInTheDocument();
 
-        debug();
-        
-      });
+      debug();
+
+    });
 
     //   it("should display success message on successful sign-up", async () => {
     //     render(<SignUp />);
     //   });
 
-    //   it("should display error message on sign-up failure", async () => {
-    //     render(<SignUp />);
-    //   });
-    // });
+    it("should display error message on sign-up failure", async () => {
+      render(<SignUp />);
+      const usernameInput = getter.getUsernameInput();
+      const emailInput = getter.getEmailInput();
+      const passwordInput = getter.getPasswordInput();
+      const signupButton = getter.getSignUpButton();
+
+      userEvent.type(usernameInput, "testuser");
+      userEvent.type(emailInput, "bbisann@gmail.com");
+      userEvent.type(passwordInput, "12345678");
+      userEvent.click(signupButton);
+
+      const signUpError = await getter.getSignUpError();
+      expect(signUpError).toBeInTheDocument();
+      debug();
+
+    });
+
 
     // describe("Form Interaction", () => {
     //   it("should enable Sign Up button when form is valid", async () => {
