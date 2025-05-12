@@ -125,7 +125,6 @@ describe("SignUp Component", () => {
         debug();
       });
 
-
       it("should disable Sign Up button when form is invalid", async () => {
         render(<SignUp />);
         const usernameInput = getter.getUsernameInput();
@@ -147,12 +146,23 @@ describe("SignUp Component", () => {
           expect(signupButton).toBeDisabled();
         });      // debug();
       });
+
+
+      it("should update form fields on user input", async () => {
+        render(<SignUp />);
+        const usernameInput = getter.getUsernameInput();
+        const emailInput = getter.getEmailInput();
+        const passwordInput = getter.getPasswordInput();
+
+        userEvent.type(usernameInput, "bisan{enter}");
+        userEvent.type(emailInput, "bisan@gmail.com{enter}");
+        userEvent.type(passwordInput, "12345678{enter}"); 
+
+        expect(usernameInput).toHaveValue("bisan");
+        expect(emailInput).toHaveValue("bisan@gmail.com");
+        expect(passwordInput).toHaveValue("12345678");
+      });
     });
-
-
-    //   it("should update form fields on user input", async () => {
-    //     render(<SignUp />);
-    //   });
 
     //   it("should redirect user to home page after successful signup", async () => {
     //     render(<SignUp />);
