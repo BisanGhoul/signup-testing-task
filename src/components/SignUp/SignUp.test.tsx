@@ -6,6 +6,7 @@ import { handlers } from "./handlers";
 import { debug } from "jest-preview";
 import { getButtonByName, getInputByLabel, getHeadingByText, findElementByText } from "../../test-utils/getterUtility";
 import userEvent from "@testing-library/user-event";
+import { get } from "http";
 // Setting up the mock server
 const server = setupServer(...handlers);
 
@@ -108,11 +109,22 @@ describe("SignUp Component", () => {
 
     });
 
+    describe("Form Interaction", () => {
+      it("should enable Sign Up button when form is valid", async () => {
+        render(<SignUp />);
+        const usernameInput = getter.getUsernameInput();
+        const emailInput = getter.getEmailInput();
+        const passwordInput = getter.getPasswordInput();
 
-    // describe("Form Interaction", () => {
-    //   it("should enable Sign Up button when form is valid", async () => {
-    //     render(<SignUp />);
-    //   });
+        userEvent.type(usernameInput, "testuser");
+        userEvent.type(emailInput, "bbisann@gmail.com");
+        userEvent.type(passwordInput, "12345678");
+
+        const signupButton = getter.getSignUpButton();
+        expect(signupButton).toBeEnabled();
+        debug();
+      });
+    });
 
     //   it("should disable Sign Up button when form is invalid", async () => {
     //     render(<SignUp />);
